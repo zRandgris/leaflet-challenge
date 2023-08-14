@@ -3,19 +3,23 @@
 //url for 30 days https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson for more data
 
 let url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
+let urlplate = "./static/data/PB2002_boundaries.json"
 
 //perform a get request and load using d3
 
 d3.json(url).then(function(data){
+    d3.json(urlplate).then(function(pdata){
     //to check the data structure
     console.log(data.features)
+    console.log(pdata)
 
-    createFeatures(data.features);
+    createFeatures(data.features,pdata.features);
+    });
 });
 
 
 // Defining the function for features
-function createFeatures(earthquakeData){
+function createFeatures(earthquakeData,pdata){
 
     //Define a funciton to run for each features.
     // Giving each feature a popup,
@@ -31,7 +35,18 @@ function createFeatures(earthquakeData){
     onEachFeature: onEachFeature,
     pointToLayer: createMarker
 });
-    createMap(earthquakes);
+
+// Create GeoJson for plate
+let plates = L.geoJSON(pdata,{
+    style: function(){
+        return{
+            color: "black",
+            weight:2.5
+        }
+    }
+});
+
+    createMap(earthquakes,plates);
 }
 
 //marker style
@@ -52,7 +67,7 @@ function createMarker(feature, style){
 }
 
 
-function createMap(earthquakes){
+function createMap(earthquakes, plates){
 
     // Create base layers.
     let street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -72,7 +87,8 @@ function createMap(earthquakes){
     
     // Crate overlay object to hold our overlay
     let overlayMaps = {
-    Earthquakes: earthquakes      
+    Earthquakes: earthquakes,  
+    Plates : plates    
 
     };
 
@@ -82,7 +98,7 @@ function createMap(earthquakes){
       37.09, -95.71
     ],
     zoom: 5,
-    layers: [street, earthquakes]
+    layers: [street, earthquakes, plates]
   });
 
   // Create a layer control.
@@ -102,7 +118,7 @@ function createMap(earthquakes){
         let div = L.DomUtil.create("div", "legend"),
         labels = [],
         catergory = [-10,10,30,50,70,90],
-        legendInfo = "<p>Depth</p>";
+        legendInfo = "<h1>Depth</h1>";
 
 
     for (let i = 0; i < catergory.length; i++) {

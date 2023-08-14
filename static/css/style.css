@@ -16,6 +16,7 @@ html {
   color: #555;
   background-color: #fff;
   border-radius: 5px;
+  box-shadow: 0 0 15px rgba(128, 58, 58, 50);
 }
 
 .legend i {
