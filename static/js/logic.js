@@ -93,21 +93,29 @@ function createMap(earthquakes){
   }).addTo(Map);
 
 // Create a legend to display information about our map.
-let info = L.control({
-    position: "bottomright"
-  });
+    let info = L.control({
+        position: "bottomright"
+        });
 
 // When the layer control is added, insert a div with the class of "legend".
-info.onAdd = function(Map) {
-    let div = L.DomUtil.create("div", "legend"),
-        labels = ['<h3> Test </h3>'],
-        numbers = [1,2,3,4,5];
+    info.onAdd = function(Map) {
+        let div = L.DomUtil.create("div", "legend"),
+        labels = [],
+        catergory = [-10,10,30,50,70,90],
+        legendInfo = "<p>Depth</p>";
+
+
+    for (let i = 0; i < catergory.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + markerColor(catergory[i] + 1) + '"></i> ' +
+            catergory[i] + (catergory[i + 1] ? '&ndash;' + catergory[i + 1] + '<br>' : '+');
+    }   
 
     return div;
    
   };
 
-info.addTo(Map)
+  info.addTo(Map);
 
 
 
@@ -124,7 +132,7 @@ function markerColor(depth) {
             depth > 70 ? '#8E3200' :
             depth > 50 ? '#A64B2A' :
             depth > 30 ? '#D7A86E' :
-            depth > 10 ? 'D89216' :
-                         'Green' ;          
+            depth > 10 ? 'Green' :
+                         '#4B8E8D' ;          
 }
 
